@@ -1,0 +1,760 @@
+@charset "UTF-8";
+
+.container-fluid {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 85vh;
+    flex-direction: column;
+}
+@import url('https://fonts.googleapis.com/css?family=Poppins');
+/* BASIC */
+
+html {
+  background-color: rgb(255, 255, 255);
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  height: 85vh;
+}
+
+a {
+  color: #92badd;
+  display:inline-block;
+  text-decoration: none;
+  font-weight: 400;
+}
+
+h2 {
+   
+  text-align: center;
+  font-size: 16px;
+  font-weight: 600;
+  text-transform: uppercase;
+  display:inline-block;
+  margin: 40px 8px 10px 8px; 
+  color: #78738c;
+}
+/* STRUCTURE */
+
+.formwrapper {
+  display: flex;
+  align-items: center;
+  flex-direction: column; 
+  justify-content: center;
+  width: 100%;
+  min-height: 100%;
+  padding: 20px;
+}
+
+#formContent {
+  -webkit-border-radius: 10px 10px 10px 10px;
+  border-radius: 10px 10px 10px 10px;
+  background: #fff;
+  padding: 15px;
+  width: 80vw;
+  max-width: 900px;
+  position: relative;
+  padding: 0px;
+  text-align: center;
+}
+
+#formFooter {
+  background-color: #f6f6f6;
+  border-top: 1px solid #dce8f1;
+  padding: 25px;
+  text-align: center;
+  -webkit-border-radius: 0 0 10px 10px;
+  border-radius: 0 0 10px 10px;
+}
+
+/* TABS */
+
+h2.inactive {
+  color: #cccccc;
+}
+
+h2.active {
+  color: #0d0d0d;
+  border-bottom: 2px solid #5fbae9;
+}
+
+h3 {
+    margin: 19px 0 8px;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.box {
+    display: block;
+    width: 100%;
+    height: 51px;
+    border: solid 1px #dadada;
+    padding: 10px 14px 10px 14px;
+    box-sizing: border-box;
+    background: #fff;
+    position: relative;
+}
+
+.int {
+    display: block;
+    position: relative;
+    width: 100%;
+    height: 29px;
+    border: none;
+    background: #fff;
+    font-size: 15px;
+}
+
+/* FORM TYPOGRAPHY*/
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+  background-color: #E8F0FE !important;
+  color:white;
+}
+
+input:focus { background-color: #E8F0FE !important; }
+
+select:focus { background-color: #E8F0FE !important; }
+
+input[type=button], input[type=submit], input[type=reset]  {
+  background-color: #56baed;
+  border: none;
+  color: white;
+  padding: 15px 80px;
+  text-align: center;
+  text-decoration: none;
+/*   display: inline-block; */
+  text-transform: uppercase;
+  font-size: 13px;
+  -webkit-border-radius: 5px 5px 5px 5px;
+  border-radius: 5px 5px 5px 5px;
+  margin: 5px 20px 40px 20px;
+  -webkit-transition: all 0.3s ease-in-out;
+  -moz-transition: all 0.3s ease-in-out;
+  -ms-transition: all 0.3s ease-in-out;
+  -o-transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
+}
+
+input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover  {
+  background-color: #39ace7;
+}
+
+input[type=button]:active, input[type=submit]:active, input[type=reset]:active  {
+  -moz-transform: scale(0.95);
+  -webkit-transform: scale(0.95);
+  -o-transform: scale(0.95);
+  -ms-transform: scale(0.95);
+  transform: scale(0.95);
+}
+
+input[type=text] {
+  background-color: #f6f6f6;
+  border: none;
+  color: #0d0d0d;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+/*   display: inline-block; */
+  font-size: 16px;
+  margin: 5px;
+  width: 65%;
+  border: 2px solid #f6f6f6;
+  -webkit-transition: all 0.5s ease-in-out;
+  -moz-transition: all 0.5s ease-in-out;
+  -ms-transition: all 0.5s ease-in-out;
+  -o-transition: all 0.5s ease-in-out;
+  transition: all 0.5s ease-in-out;
+  -webkit-border-radius: 5px 5px 5px 5px;
+  border-radius: 5px 5px 5px 5px;
+}
+
+input[type=password] {
+  background-color: #f6f6f6;
+  border: none;
+  color: #0d0d0d;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+/*   display: inline-block; */
+  font-size: 16px;
+  margin: 15px;
+  width: 65%;
+  border: 2px solid #f6f6f6;
+  -webkit-transition: all 0.5s ease-in-out;
+  -moz-transition: all 0.5s ease-in-out;
+  -ms-transition: all 0.5s ease-in-out;
+  -o-transition: all 0.5s ease-in-out;
+  transition: all 0.5s ease-in-out;
+  -webkit-border-radius: 5px 5px 5px 5px;
+  border-radius: 5px 5px 5px 5px;
+}
+
+input[type=text]:focus {
+  background-color: #fff;
+  border-bottom: 2px solid #5fbae9;
+}
+
+input[type=text]:placeholder {
+  color: rgb(0, 128, 128);
+  
+}
+
+::placeholder {
+  font-size: 1.2rem;}
+
+
+/* ANIMATIONS */
+
+/* Simple CSS3 Fade-in-down Animation */
+.fadeInDown {
+  -webkit-animation-name: fadeInDown;
+  animation-name: fadeInDown;
+  -webkit-animation-duration: 0.2s;
+  animation-duration: 0.2s;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+}
+
+@-webkit-keyframes fadeInDown {
+  0% {
+    opacity: 0;
+    -webkit-transform: translate3d(0, -100%, 0);
+    transform: translate3d(0, -100%, 0);
+  }
+  100% {
+    opacity: 1;
+    -webkit-transform: none;
+    transform: none;
+  }
+}
+
+@keyframes fadeInDown {
+  0% {
+    opacity: 0;
+    -webkit-transform: translate3d(0, -100%, 0);
+    transform: translate3d(0, -100%, 0);
+  }
+  100% {
+    opacity: 1;
+    -webkit-transform: none;
+    transform: none;
+  }
+}
+
+/* Simple CSS3 Fade-in Animation */
+@-webkit-keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+@-moz-keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+@keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+
+.fadeIn {
+  opacity:0;
+  -webkit-animation:fadeIn ease-in 1;
+  -moz-animation:fadeIn ease-in 1;
+  animation:fadeIn ease-in 1;
+
+  -webkit-animation-fill-mode:forwards;
+  -moz-animation-fill-mode:forwards;
+  animation-fill-mode:forwards;
+
+  -webkit-animation-duration:1s;
+  -moz-animation-duration:1s;
+  animation-duration:1s;
+}
+
+.fadeIn.first {
+  -webkit-animation-delay: 0.4s;
+  -moz-animation-delay: 0.4s;
+  animation-delay: 0.4s;
+}
+
+.fadeIn.second {
+  -webkit-animation-delay: 0.6s;
+  -moz-animation-delay: 0.6s;
+  animation-delay: 0.6s;
+}
+
+.fadeIn.third {
+  -webkit-animation-delay: 0.8s;
+  -moz-animation-delay: 0.8s;
+  animation-delay: 0.8s;
+}
+
+.fadeIn.fourth {
+  -webkit-animation-delay: 1s;
+  -moz-animation-delay: 1s;
+  animation-delay: 1s;
+}
+
+/* Simple CSS3 Fade-in Animation */
+.underlineHover:after {
+  display: block;
+  left: 0;
+  bottom: -10px;
+  width: 0;
+  height: 2px;
+  background-color: #56baed;
+  content: "";
+  transition: width 0.2s;
+}
+
+.underlineHover:hover {
+  color: #0d0d0d;
+}
+
+.underlineHover:hover:after{
+  width: 100%;
+}
+
+/* OTHERS */
+
+*:focus {
+  outline: none;
+} 
+
+#icon {
+  width:60%;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+h2 {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 600;
+  text-transform: uppercase;
+/*   display:inline-block; */
+  margin: 40px 8px 10px 8px; 
+  color: #78738c;
+  
+}
+
+h2.inactive {
+  color: #cccccc;
+}
+
+h2.active {
+  color: #0d0d0d;
+  border-bottom: 2px solid #5fbae9;
+}
+/** 
+   input
+   input placeholder-shown + label
+    input focus + label
+    input focus
+    input not
+    input
+    input
+    input [type=]{submit, radio, option}
+    
+    */
+input{
+    background:#f6f6f6;;
+    border:none;
+    border-bottom: solid 1px #ccc;
+    padding:20px 0px 5px 0px;
+    margin: 15px;
+    font-size:16pt;
+    width:65%;
+    text-align: center;
+    border-radius: 10px 10px 10px 10px;
+    
+}
+
+input:placeholder-shown + label{
+    color:#aaa;
+    font-size:16pt;
+    top:15px;
+}
+
+input:focus + label{
+    color:#8aa1a1;
+    font-size:10pt;
+    pointer-events: none;
+    position: absolute;
+    left:0px;
+    top:0px;
+    transition: all 0.2s ease ;
+    -webkit-transition: all 0.2s ease;
+    -moz-transition: all 0.2s ease;
+    -o-transition: all 0.2s ease;
+}
+
+input:focus, input:not(:placeholder-shown){
+    border-bottom: solid 1px #8aa1a1;
+    outline:none;
+}
+
+input[type=submit]{
+    background-color: #8aa1a1;
+    border:none;
+    color:white;
+    border-radius: 5px;
+    width:100%;
+    height:35px;
+    font-size: 16pt;
+    margin-top:15px;
+}
+
+input[type=radio]{
+/*     display: inline-block; */
+    width: 6%;
+}
+
+input[type=option]{
+/*     display: inline-block; */
+    width: 6%;
+}
+
+select{
+   background-color:#f6f6f6;
+   border:none;
+   font-size: 14pt;
+   text-align:center;
+   color:black;
+   width:1400px auto;
+   border-radius: 5px;
+   border-color: E8F0FE;
+   position: relative;
+   text-align-last: center;
+   text-align: center;
+   -ms-text-align-last: center;
+   -moz-text-align-last: center;
+   
+}
+
+.modal_wrap{
+    display: none;
+    width: 500px;
+    height: 500px;
+    position: absolute;
+    top:50%;
+    left: 50%;
+    margin: -250px 0 0 -250px;
+    background:#eee;
+    z-index: 2;
+    }
+    .black_bg{
+    display: none;
+    position: absolute;
+    content: "";
+    width: 100%;
+    height: 100%;
+    background-color:rgba(0, 0,0, 0.5);
+    top:0;
+    left: 0;
+    z-index: 1;
+    }
+    .modal_close{
+    width: 26px;
+    height: 26px;
+    position: absolute;
+    top: -30px;
+    right: 0;
+    }
+    .modal_close> a{
+    display: block;
+    width: 100%;
+    height: 100%;
+    background:url(https://img.icons8.com/metro/26/000000/close-window.png);
+    text-indent: -9999px;
+    }
+
+
+
+
+
+.comment {
+   position: relative;
+   margin-top:20px;
+   padding-left:160px;
+   text-align: left;
+   font-family: Dotum,'돋움',Helvetica,sans-serif;
+   font-weight: bold;
+   color: #111;
+}
+
+
+
+#idCheck{
+    position: absolute;
+    right: 5px;
+    top: 20px;
+    background-color: #8aa1a1;
+    border: none;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 5px;
+    display: block;
+    font-size: 0.8rem;
+    padding: 3px 10px;
+}
+
+#findPost{
+    position: absolute;
+    top: -10px;
+    right: -28px;
+    border: none;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 5px;
+    display:inline-block;
+    font-size: 1.5rem;
+}
+
+#btnJoin {
+    background-color: #8aa1a1;
+    border: none;
+    color: white;
+    margin-top: 15px;
+    text-align: center;
+    display:inline-block;
+    text-decoration: none;
+    border-radius: 5px;
+    width:65%;
+    height:35px;
+    font-size: 16px;
+}
+
+
+/* .postcodebtn >i { */
+/* } */
+
+/* 에러메세지 */
+
+.error_next_box {
+    margin-top: 9px;
+    font-size: 12px;
+    color: red;    
+    display: none;
+}
+
+#alertTxt {
+    position: absolute;
+    top: 19px;
+    right: 38px;
+    font-size: 16px;
+    color: red;
+    display: none;
+}
+
+/** block & icon 처리 영역 idBox, pwdGruop, nameBlock, birthDtBox, gender, postNum, address, phoneNum(mobileNum) */
+
+
+.idBox{
+    position: relative;
+}
+
+.inputId {
+   position: relative;
+   margin-top:45px;
+      width: 100%;
+      display: inline-block;
+      text-align: center;
+      border-radius: 5px;
+}
+
+.fa-id-card {
+   position: absolute;
+    top: 15px;
+    left: 178px;
+    border: none;
+    color: black;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 1.5px;
+    display: block;
+    font-size: 1.5rem;
+    z-index : 1;
+}
+
+.pwdGroup {
+   position: relative;
+      width: 100%;
+      display: inline-block;
+      text-align: center;
+      border-radius: 5px;
+} 
+
+.fa-lock {
+   position: absolute;
+    top: 28px;
+    left: 178px;
+    border: none;
+    color: black;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 1.5px;
+    display: block;
+    font-size: 1.5rem;
+    z-index : 1;
+}
+
+.nameBlock{
+   position: relative;
+      width: 100%;
+      display: inline-block;
+      text-align: center;
+      border-radius: 5px;
+}
+
+.fa-user-edit{
+   position: absolute;
+    top: 20px;
+    left: 178px;
+    border: none;
+    color: black;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 1.5px;
+    display: block;
+    font-size: 1.5rem;
+    z-index : 1;
+}
+
+.birthDtBox{
+    margin-top: 15px;
+}
+
+.birthDtBox > input{
+  margin-top: 15px;
+  margin-bottom : 15px;
+  -webkit-border-radius: 10px 10px 10px 10px;
+  width: 65%;
+  border-radius: 10px 10px 10px 10px;
+  background: #f6f6f6;
+  padding: 15px;
+  font-family: Dotum,'돋움',Helvetica,sans-serif;
+  display: inline-block;
+  text-align: center;
+}
+
+.gender{
+  position: relative;
+  margin-top: 15px;
+  margin-bottom : 15px;
+  -webkit-border-radius: 10px 10px 10px 10px;
+  width: 65%;
+  height: 51.77px;
+  border-radius: 10px 10px 10px 10px;
+  background: #f6f6f6;
+  font-family: Dotum,'돋움',Helvetica,sans-serif;
+  display: inline-block;
+  text-align: center;
+}
+
+.fa-venus-double{
+   position: absolute;
+    top: 15px;
+    left: 20.0px;
+    border: none;
+    color: black;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 1.5px;
+    display: block;
+    font-size: 1.5rem;
+    z-index : 1;
+}
+
+.postBox{
+    position: relative;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+.postBox >input{
+   position: relative;
+   margin-top: 15px;
+    margin-bottom: 15px;
+    padding: 15px 32px;
+}
+
+.postcodebtn{
+    position: absolute;
+    top: 24px;
+    left: 174.25px;
+    border: none;
+    color: black;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 5px;
+    display: block;
+    font-size: 1.5rem;
+    z-index : 1;
+}
+
+.btn-img{
+   position: relative;
+    left: 174.25px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 1.8rem;
+    z-index : 1;
+   
+}
+
+.fa-map-pin{
+   position: absolute;
+    top: 84px;
+    left: 178px;
+    border: none;
+    color: black;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 5px;
+    display: block;
+    font-size: 1.5rem;
+    z-index : 1;
+}
+
+.phoneNum {
+   position: relative;
+}
+
+.phoneNum > input {
+   margin-top: 15px;
+   margin-bottom: 15px;
+   padding: 15px 32px;
+}
+
+.fa-phone{
+   position: absolute;
+    top: 30px;
+    left: 174.0px;
+    border: none;
+    color: black;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 1.5px;
+    display: block;
+    font-size: 1.5rem;
+    z-index : 1;
+}
+
+.fa-mobile-alt{
+   position: absolute;
+    top: 28px;
+    left: 178.0px;
+    border: none;
+    color: black;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 1.5px;
+    display: block;
+    font-size: 1.5rem;
+    z-index : 1;
+}

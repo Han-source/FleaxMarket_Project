@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- Sql에 있는 Data를 가져 오기 위해서 만들어놓은 기본 틀 -->
+
+<mapper
+   namespace="www.dream.com.business.persistence.BusinessMapper">
+   <!-- resultMap : DB Table 정의 내역과 객체 정의 내역에 있어 mismatch(부조화)가 있을 시 이를 연동, 
+      짝 지어주는 정보를 정의함 -->
+   <resultMap type="www.dream.com.business.model.ProductVO"
+      id="productMap"
+      extends="www.dream.com.bulletinBoard.persistence.BoardMapper.boardMapper">
+      <id property="productId" column="product_id"></id>
+      <result property="userId" column="user_id"></result>
+      <result property="productPrice" column="product_price"></result>
+      <result property="discrim" column="discrim"></result>
+   </resultMap>
+
+   <resultMap type="www.dream.com.business.model.TradeVO" id="tradeMap">
+      <id property="tradeId" column="trade_id"></id>
+      <result property="productFinalPrice" column="product_final_price"></result>
+      <result property="productId" column="product_id"></result>
+      <result property="sellerId" column="seller_id"></result>
+      <result property="buyerId" column="buyer_id"></result>
+      <result property="tradeDate" column="trade_date"></result>
+      <result property="adminPermission" column="admin_permission"></result>
+   </resultMap>
+
+   <resultMap type="www.dream.com.business.model.TradeConditionVO" id="conditionMap">
+      <id property="sellerId" column="seller_id"></id>
+      <result property="buyerId" column="buyer_id"></result>
+      <result property="tradeId" column="trade_id"></result>
+      <result property="productId" column="product_id"></result>
+      <result property="discountPrice" column="discount_price"></result>
+      <result property="auctionCurrentPrice" column="auction_current_price"></result>
+      <result property="auctionStartDate" column="auction_start_date"></result>
+      <result property="auctionEndDate" column="auction_end_date"></result>
+   </resultMap>
+
+   <resultMap type="www.dream.com.business.model.ShippingInfoVO" id="shippingMap" extends="tradeMap">   
+      <result property="address" column="address"></result>
+      <result property="phonNum" column="phone_num"></result>
+      <result property="reserveNum" column="reserve_num"></result>
+      <result property="absentMsg" column="absent_message"></result>
+   </resultMap>
+   
+<!-- ☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆상품 처리 함수 정의 영역☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆ -->
+
+<!--    public int insertCommonProduct(@Param("productVO") ProductVO productVO, @Param("post") PostVO post, @Param("board") BoardVO board); -->
+   <insert id="insertCommonProduct">
+      insert all
+      <selectKey keyProperty="post.id" order="BEFORE"
+         resultType="string">
+         select get_id(seq_reply_id.nextval) from dual
+      </selectKey>
+      into s_reply(id, board_id, child_board_id, writer_id, title, content, descrim, product_id)
+         values(#{post.id}, #{board.id}, #{board.parentId}, #{post.writer.userId}, #{post.title}, #{post.content}, #{productVO.DESCRIM4POST}, #{post.id})
+         
+      into s_trade_product(product_id, board_id, parent_id, user_id, product_price)
+         values(#{post.id}, #{board.id}, #{board.parentId}, #{post.writer.userId}, #{productVO.productPrice})
+         
+      into s_trade_condition(seller_id, product_id)
+         values(#{post.writer.userId}, #{post.id})
+         
+      select * from dual
+   </insert>
+   
+   <!-- public ProductVO findPriceById(@Param("productId") String id, @Param("child") int child); // id와 childId를 통해 조회  -->
+   <select id="findPriceById" resultMap="productMap"> 
+   <![CDATA[ 
+   select sp.*
+        from s_reply p, s_trade_product sp
+       where p.id = #{productId}
+       and p.product_id = sp.product_id
+   ]]>
+   </select>
+   
+   <select id="lookChartProduct" resultMap="conditionMap">
+   select *
+      from s_trade_condition
+     where product_id = #{productId}
+     order by auction_current_price
+   </select>
+   
+   <!-- 판매현황 차트화 -->      
+<!-- public void selledChart(@Param("userId") String userId); --> 
+   <select id="selledChart" resultMap="tradeMap">
+    select d.trade_date as trade_date, sum(t.product_final_price) as product_final_price 
+        from s_trade t, s_trade_product tp,
+                  (select distinct TO_CHAR(t.trade_date, 'yyyy-mm-dd') trade_date
+                    from s_trade t, s_trade_product tp
+                     where t.product_id = tp.product_id
+                     group by t.trade_date) d, s_party p                   
+       where TO_CHAR(t.trade_date, 'yyyy-mm-dd') = d.trade_date
+      and tp.user_id = #{userId}
+        and t.seller_id = tp.user_id
+        and selled = 1
+        and p.user_id = t.seller_id
+        and tp.product_id = t.product_id
+         and d.trade_date BETWEEN TO_char(sysdate - 3, 'YYYY-MM-DD') 
+                   AND TO_char(sysdate + 3, 'YYYY-MM-DD')
+       GROUP BY d.trade_date
+       order by d.trade_date
+   </select>
+	<!-- 판매현황 차트 기간 정해서 보는 기능 -->
+   <!-- public List<TradeVO> mySelledDateChart(@Param("userId") String userId, @Param("firstDate") String firstDate,
+         @Param("lastDate") String lastDate); -->
+   <select id="mySelledDateChart" resultMap="tradeMap">
+   select d.trade_date as trade_date, sum(t.product_final_price) as product_final_price 
+        from s_trade t, s_trade_product tp,
+                  (select distinct TO_CHAR(t.trade_date, 'yyyy-mm-dd') trade_date
+                    from s_trade t, s_trade_product tp
+                     where t.product_id = tp.product_id
+                     group by t.trade_date) d, s_party p                   
+       where TO_CHAR(t.trade_date, 'yyyy-mm-dd') = d.trade_date
+      and tp.user_id = #{userId}
+        and t.seller_id = tp.user_id
+        and selled = 1
+        and p.user_id = t.seller_id
+        and tp.product_id = t.product_id
+         and t.trade_date BETWEEN TO_date(#{firstDate}, 'YYYY-MM-DD') 
+                   AND TO_date(#{lastDate}, 'YYYY-MM-DD')
+       GROUP BY d.trade_date
+       order by d.trade_date
+   </select>
+   
+      <!-- public int findShoppingCartByUserIdAndProductId(@Param("userId") String userId, @Param("productId") String productId); -->
+   <select id="findShoppingCartByUserIdAndProductId" resultType="_int"> 
+   <![CDATA[ 
+   select count(*)
+     from s_shopping_bascket
+      where user_id = #{userId}
+      and product_id = #{productId}
+   ]]>
+   </select>
+   
+<!-- ☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆경매 처리 함수 정의 영역☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆ -->
+
+<!--  public int insertAuctionProduct(@Param("productVO") ProductVO productVO, @Param("post") PostVO post,
+    @Param("tradeCondition") TradeConditionVO tradeCondition,  @Param("board") BoardVO board); -->
+   <insert id="insertAuctionProduct">
+      insert all
+      <selectKey keyProperty="post.id" order="BEFORE"
+         resultType="string">
+         select get_id(seq_reply_id.nextval) from dual
+      </selectKey>
+      into s_reply(id, board_id, child_board_id, writer_id, title, content, descrim, product_id)
+         values(#{post.id}, #{board.id}, #{board.parentId}, #{post.writer.userId}, #{post.title}, #{post.content}, #{productVO.DESCRIM4POST}, #{post.id})
+         
+      into s_trade_product(product_id, board_id, parent_id, user_id, product_price)
+         values(#{post.id}, #{board.id}, #{board.parentId}, #{post.writer.userId}, #{productVO.productPrice})
+         
+      into s_trade_condition(seller_id, product_id, auction_current_price,  auction_end_date)
+         values(#{post.writer.userId}, #{post.id}, #{tradeCondition.auctionCurrentPrice}, #{tradeCondition.auctionEndDate})
+         
+      select * from dual
+   </insert>
+
+<!-- public int insertAuctionPrice(@Param("post") PostVO post, @Param("tradeCondition") TradeConditionVO tradeCondition,  @Param("board") BoardVO board); -->
+   <insert id="insertAuctionPrice">
+      insert 
+        into s_trade_condition(seller_id, buyer_id, product_id,  auction_current_price)
+       values(#{tradeCondition.sellerId}, #{tradeCondition.buyerId}, #{post.id}, #{tradeCondition.auctionCurrentPrice})
+   </insert>
+
+<!--  public TradeConditionVO findAuctionPriceById(@Param("productId") String id); // id와 childId를 통해 조회 -->
+   <select id="findAuctionPriceById" resultMap="conditionMap"> 
+   <include refid="findAuctionCommon"></include>
+       and sc.auction_current_price = 0
+       and sc.discount_price = 0
+   </select>   
+   
+<!--  public List<TradeConditionVO> findAuctionPartyById(@Param("productId") String id); -->
+   <select id="findAuctionPartyById" resultMap="conditionMap"> 
+   <include refid="findAuctionCommon"></include>
+       and sc.auction_current_price > 0
+       order by sc.auction_current_price 
+   </select>
+
+<!-- 경매 가격의 최대값 비교  -->
+<!-- public int findMaxBidPrice(String productId) -->
+   <select id="findMaxBidPrice" resultMap="conditionMap">
+   select * from s_trade_product tp, s_trade_condition tc
+     where tp.product_id = tc.product_id
+      and tc.product_id = #{productId}
+      <include refid="maxMinPriceCommon"></include>
+            )         
+   </select>
+      
+<!-- ☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆거래종류 처리 함수 정의 영역☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆ -->
+
+<!-- public TradeConditionVO findNegoPriceByBuyerWithProductId(@Param("productId") String productId, @Param("tc") TradeConditionVO tc); -->
+   <select id="findNegoPriceByBuyerWithProductId" resultMap="conditionMap"> 
+   select * from s_trade_product tp, s_trade_condition tc
+     where tp.product_id = tc.product_id
+      and tc.product_id = #{productId}
+      and tc.buyer_id = #{tc.buyerId}
+      <include refid="maxMinPriceCommon"></include>
+            and buyer_id = #{tc.buyerId}
+       )    
+   </select>
+
+<!-- ☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆결제 처리 함수 정의 영역☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆ -->
+
+<!-- /* 상품 결제 시 shipping 정보 public void findMyShippingInfo(@Param("productId") String productId); -->
+   <select id="findMyShippingInfo" resultMap="shippingMap"> 
+   select si.*
+     from s_trade st, s_shipping_info si
+    where st.trade_id = si.trade_id
+    and st.product_id = #{productId}
+   </select>
+<!--public void insertNegoProductPrice2Buyer(@Param("tradeCondition") TradeConditionVO tradeCondition, @Param("postId") String postId); -->
+   <insert id="insertNegoProductPrice2Buyer">
+   insert into s_trade_condition (seller_id, product_id, discount_price, buyer_id) 
+      values (#{post.writer.userId}, #{postId}, #{tradeCondition.discountPrice}, #{tradeCondition.buyerId}) 
+   </insert>
+
+<!-- public void insertShopphingCart(@Param("userId") String userId, @Param("productId") String productId); -->
+   <insert id="insertShopphingCart">
+   insert into s_shopping_bascket (user_id, product_id) 
+      values (#{userId}, #{productId}) 
+   </insert>
+
+<!-- 상품 구매 -->
+<!-- public void purchaseProduct(@Param("shippingInfo") ShippingInfoVO shippingInfo); -->
+   <insert id="purchaseProduct">
+      <selectKey keyProperty="shippingInfo.tradeId" order="BEFORE" resultType="string">
+            select get_id(seq_reply_id.nextval) from dual
+      </selectKey>
+      insert all
+       into s_trade (trade_id, PRODUCT_FINAL_PRICE, seller_id, buyer_id, trade_date, product_id) 
+         values (#{shippingInfo.tradeId}, #{shippingInfo.productFinalPrice}, #{shippingInfo.sellerId}, #{shippingInfo.buyerId}, sysdate, #{shippingInfo.productId}) 
+         
+       into s_shipping_info(trade_id, buyer_name, address, phone_num, reserve_num, absent_message)
+         values (#{shippingInfo.tradeId}, #{shippingInfo.buyerId}, #{shippingInfo.address}, #{shippingInfo.phonNum}, #{shippingInfo.reserveNum}, #{shippingInfo.absentMsg})
+       select * from dual
+   </insert>
+   
+<!-- 결제하기 버튼을 눌렀을 시 +1을 시켜준다. -->
+<!-- public int selledProdut(@Param("productId") String productId); -->
+    <update id="selledProdut">
+    UPDATE s_trade_product
+         set selled = selled + 1
+         where product_id = #{productId}
+   </update>
+   
+   <!-- public void updateAdminPurchase(@Param("tradeId") String tradeId); -->
+   <update id="updateAdminPurchase">
+    UPDATE s_trade
+         set admin_permission = admin_permission + 1
+         where trade_id = #{tradeId}
+   </update>
+   
+   <!-- public void updateAdminDisAgreepurchase(@Param("tradeId") String tradeId); -->
+   <update id="updateAdminDisAgreepurchase">
+    UPDATE s_trade
+         set admin_permission = admin_permission + 2
+         where trade_id = #{tradeId}
+   </update>
+   
+<!-- ☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆판매현황 조회 관련 함수☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆ -->
+   <!-- public TradeVO findAllPurchase(); -->
+   <select id="findAllPurchase" resultMap="tradeMap">
+      select d.trade_date as trade_date, sum(t.product_final_price) as product_final_price
+        from s_trade t,
+                  (select distinct TO_CHAR(t.trade_date, 'yyyy-mm-dd') trade_date
+                    from s_trade t, s_trade_product tp
+                   where t.product_id = tp.product_id
+                   group by t.trade_date) d
+       where TO_CHAR(t.trade_date, 'yyyy-mm-dd') = d.trade_date
+       GROUP BY d.trade_date
+       order by d.trade_date 
+   </select>
+   
+   
+   <!-- public List<TradeVO> find1DayPurchase(@Param("pickDate") Date pickDate); -->
+   <select id="find1DayPurchase" resultMap="tradeMap">
+      select d.trade_date as trade_date, sum(t.product_final_price) as product_final_price
+        from s_trade t,
+                  (select distinct TO_CHAR(t.trade_date, 'yyyy-mm-dd') trade_date
+                    from s_trade t, s_trade_product tp
+                   where t.product_id = tp.product_id
+                     group by t.trade_date) d
+       where TO_CHAR(t.trade_date, 'yyyy-mm-dd') = d.trade_date
+         and d.trade_date = #{pickDate}
+       GROUP BY d.trade_date
+       order by d.trade_date 
+   </select>
+   
+   <!--  public List<TradeVO> findBetweenDayPurchase(@Param("firstDate") Date firstDate, @Param("lastDate") Date lastDate);-->
+   <select id="findBetweenDayPurchase" resultMap="tradeMap">
+      select d.trade_date as trade_date, sum(t.product_final_price) as product_final_price
+        from s_trade t,
+                  (select distinct TO_CHAR(t.trade_date, 'yyyy-mm-dd') trade_date
+                    from s_trade t, s_trade_product tp
+                   where t.product_id = tp.product_id
+                   and t.trade_date BETWEEN TO_DATE(#{firstDate}, 'YYYY-MM-DD') 
+                   AND TO_DATE(#{lastDate}, 'YYYY-MM-DD') + 1    
+                     group by t.trade_date) d
+       where TO_CHAR(t.trade_date, 'yyyy-mm-dd') = d.trade_date
+       GROUP BY d.trade_date
+       order by d.trade_date
+   </select>
+<!-- ☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆inClude☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆ -->
+   
+   <sql id="findAuctionCommon">
+   select sc.*
+        from s_reply p, s_trade_condition sc
+       where p.id = #{productId}
+       and p.product_id = sc.product_id
+   </sql>
+   
+   <sql id="maxMinPriceCommon">
+            and auction_current_price in(
+           select max(auction_current_price)
+             from s_trade_condition
+            where product_id = #{productId}
+           )
+       and discount_price in (
+           select min(discount_price)
+             from s_trade_condition
+            where product_id = #{productId}
+   </sql>   
+</mapper>
